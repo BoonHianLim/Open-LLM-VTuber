@@ -2,6 +2,7 @@ from typing import Type
 
 from loguru import logger
 
+from .stateless_llm.test_llm import TestLLM
 from .stateless_llm.stateless_llm_interface import StatelessLLMInterface
 from .stateless_llm.openai_compatible_llm import AsyncLLM as OpenAICompatibleLLM
 from .stateless_llm.ollama_llm import OllamaLLM
@@ -59,6 +60,13 @@ class LLMFactory:
                 base_url=kwargs.get("base_url"),
                 model=kwargs.get("model"),
                 llm_api_key=kwargs.get("llm_api_key"),
+            )
+        elif llm_provider == "test_llm":
+            return TestLLM(
+                model=kwargs.get("model"),
+                base_url=kwargs.get("base_url"),
+                llm_api_key=kwargs.get("llm_api_key"),
+                system=kwargs.get("system_prompt"),
             )
         else:
             raise ValueError(f"Unsupported LLM provider: {llm_provider}")

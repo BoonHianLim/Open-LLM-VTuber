@@ -166,6 +166,31 @@ class ClaudeConfig(StatelessLLMBaseConfig):
     }
 
 
+class TestLLMConfig(StatelessLLMBaseConfig):
+    """Configuration for OpenAI Official API."""
+
+    base_url: str = Field("https://api.anthropic.com", alias="base_url")
+    llm_api_key: str = Field(..., alias="llm_api_key")
+    model: str = Field(..., alias="model")
+    interrupt_method: Literal["system", "user"] = Field(
+        "user", alias="interrupt_method"
+    )
+
+    _CLAUDE_DESCRIPTIONS: ClassVar[dict[str, Description]] = {
+        "base_url": Description(
+            en="Base URL for Claude API", zh="Claude API 的API端点"
+        ),
+        "llm_api_key": Description(en="API key for authentication", zh="API 认证密钥"),
+        "model": Description(
+            en="Name of the Claude model to use", zh="要使用的 Claude 模型名称"
+        ),
+    }
+
+    DESCRIPTIONS: ClassVar[dict[str, Description]] = {
+        **StatelessLLMBaseConfig.DESCRIPTIONS,
+        **_CLAUDE_DESCRIPTIONS,
+    }
+
 class LlamaCppConfig(StatelessLLMBaseConfig):
     """Configuration for LlamaCpp."""
 
@@ -202,6 +227,7 @@ class StatelessLLMConfigs(I18nMixin, BaseModel):
     claude_llm: ClaudeConfig | None = Field(None, alias="claude_llm")
     llama_cpp_llm: LlamaCppConfig | None = Field(None, alias="llama_cpp_llm")
     mistral_llm: MistralConfig | None = Field(None, alias="mistral_llm")
+    test_llm: TestLLMConfig | None = Field(None, alias="test_llm")
 
     DESCRIPTIONS: ClassVar[dict[str, Description]] = {
         "openai_compatible_llm": Description(
@@ -228,5 +254,8 @@ class StatelessLLMConfigs(I18nMixin, BaseModel):
         ),
         "llama_cpp_llm": Description(
             en="Configuration for local Llama.cpp", zh="本地Llama.cpp配置"
+        ),
+        "test_llm": Description(
+            en="Configuration for test LLM", zh="测试 LLM 配置"
         ),
     }

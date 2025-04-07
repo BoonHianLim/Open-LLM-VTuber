@@ -25,10 +25,13 @@ class BasicMemoryAgentConfig(I18nMixin, BaseModel):
         "deepseek_llm",
         "groq_llm",
         "mistral_llm",
+        "test_llm"
     ] = Field(..., alias="llm_provider")
 
-    faster_first_response: Optional[bool] = Field(True, alias="faster_first_response")
-    segment_method: Literal["regex", "pysbd"] = Field("pysbd", alias="segment_method")
+    faster_first_response: Optional[bool] = Field(
+        True, alias="faster_first_response")
+    segment_method: Literal["regex", "pysbd"] = Field(
+        "pysbd", alias="segment_method")
     DESCRIPTIONS: ClassVar[Dict[str, Description]] = {
         "llm_provider": Description(
             en="LLM provider to use for this agent",
