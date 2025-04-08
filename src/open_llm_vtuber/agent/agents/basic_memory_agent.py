@@ -253,7 +253,7 @@ class BasicMemoryAgent(AgentInterface):
             segment_method=self._segment_method,
             valid_tags=["think"],
         )
-        async def chat_with_memory(input_data: BatchInput) -> AsyncIterator[str]:
+        async def chat_with_memory(input_data: BatchInput, auth_uid: str) -> AsyncIterator[str]:
             """
             Chat implementation with memory and processing pipeline
 
@@ -267,7 +267,7 @@ class BasicMemoryAgent(AgentInterface):
             messages = self._to_messages(input_data)
 
             # Get token stream from LLM
-            token_stream = chat_func(messages, self._system)
+            token_stream = chat_func(messages, self._system, auth_uid)
             complete_response = ""
 
             async for token in token_stream:
@@ -279,9 +279,9 @@ class BasicMemoryAgent(AgentInterface):
 
         return chat_with_memory
 
-    async def chat(self, input_data: BatchInput) -> AsyncIterator[SentenceOutput]:
+    async def chat(self, input_data: BatchInput, auth_uid: str) -> AsyncIterator[SentenceOutput]:
         """Placeholder chat method that will be replaced at runtime"""
-        return self.chat(input_data)
+        return self.chat(input_data, auth_uid)
 
     def reset_interrupt(self) -> None:
         """

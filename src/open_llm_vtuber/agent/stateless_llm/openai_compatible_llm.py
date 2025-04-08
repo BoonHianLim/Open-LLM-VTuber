@@ -53,7 +53,7 @@ class AsyncLLM(StatelessLLMInterface):
         )
 
     async def chat_completion(
-        self, messages: List[Dict[str, Any]], system: str = None
+        self, messages: List[Dict[str, Any]], system: str = None, auth_uid: str = ""
     ) -> AsyncIterator[str]:
         """
         Generates a chat completion using the OpenAI API asynchronously.

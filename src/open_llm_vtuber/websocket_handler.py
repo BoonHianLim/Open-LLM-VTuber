@@ -96,7 +96,7 @@ class WebSocketHandler:
         }
 
     async def handle_new_connection(
-        self, websocket: WebSocket, client_uid: str
+        self, websocket: WebSocket, client_uid: str, auth_uid: str
     ) -> None:
         """
         Handle new WebSocket connection setup
@@ -110,6 +110,7 @@ class WebSocketHandler:
         """
         try:
             session_service_context = await self._init_service_context()
+            session_service_context.auth_uid = auth_uid
 
             await self._store_client_data(
                 websocket, client_uid, session_service_context

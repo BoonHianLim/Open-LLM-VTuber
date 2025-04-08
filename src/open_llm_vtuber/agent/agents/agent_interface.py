@@ -10,7 +10,7 @@ class AgentInterface(ABC):
     """Base interface for all agent implementations"""
 
     @abstractmethod
-    async def chat(self, input_data: BaseInput) -> AsyncIterator[BaseOutput]:
+    async def chat(self, input_data: BaseInput, auth_uid: str) -> AsyncIterator[BaseOutput]:
         """
         Chat with the agent asynchronously.
 

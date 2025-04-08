@@ -1,7 +1,10 @@
 import os
 import shutil
+from uuid import uuid4
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import FileResponse, RedirectResponse
+from loguru import logger
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.responses import Response
@@ -40,6 +43,23 @@ class WebSocketServer:
             allow_headers=["*"],
         )
 
+        print("WebSocketServer initialized")
+
+        @self.app.middleware("http")
+        async def root_session_middleware(request: Request, call_next):
+            logger.info(f"Middleware called {request.url.path} {request.url.path == '/'}")
+            if request.url.path == "/":
+                # ✅ Create session here (set cookie, log session, etc.)
+                # For example, set a response cookie
+                auth_uid = request.query_params.get("auth_uid", "")
+                logger.info(f"new session id: {auth_uid}")
+                response = RedirectResponse("/assistant")
+                response.set_cookie(
+                    key="auth_uid", value=auth_uid, httponly=True)
+                return response
+
+            # Let other routes proceed as usual
+            return await call_next(request)
         # Load configurations and initialize the default context cache
         default_context_cache = ServiceContext()
         default_context_cache.load_from_config(config)
@@ -87,9 +107,9 @@ class WebSocketServer:
 
         # Mount main frontend last (as catch-all)
         self.app.mount(
-            "/",
+            "/assistant",
             CustomStaticFiles(directory="frontend", html=True),
-            name="frontend",
+            name="assistant",
         )
 
     def run(self):

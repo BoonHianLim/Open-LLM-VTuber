@@ -137,7 +137,7 @@ async def process_agent_response(
     """
     full_response = ""
     try:
-        agent_output = context.agent_engine.chat(batch_input)
+        agent_output = context.agent_engine.chat(batch_input, context.auth_uid)
         async for output in agent_output:
             response_part = await process_agent_output(
                 output=output,

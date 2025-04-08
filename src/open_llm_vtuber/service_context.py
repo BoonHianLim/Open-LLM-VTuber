@@ -53,6 +53,7 @@ class ServiceContext:
         self.system_prompt: str = None
 
         self.history_uid: str = ""  # Add history_uid field
+        self.auth_uid: str = ""  # Add auth_uid field
 
     def __str__(self):
         return (

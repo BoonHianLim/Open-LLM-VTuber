@@ -1,5 +1,6 @@
 import json
 from uuid import uuid4
+
 import numpy as np
 from datetime import datetime
 from fastapi import APIRouter, WebSocket, UploadFile, File, Response
@@ -26,11 +27,18 @@ def init_client_ws_route(default_context_cache: ServiceContext) -> APIRouter:
     @router.websocket("/client-ws")
     async def websocket_endpoint(websocket: WebSocket):
         """WebSocket endpoint for client connections"""
+
+        # 1. Extract session from cookie
+        auth_uid = websocket.cookies.get("auth_uid", None)
+        logger.info(f"cookie: {websocket.cookies}")
+        if not auth_uid:
+            await websocket.close(code=1008)  # Policy Violation
+            return
         await websocket.accept()
         client_uid = str(uuid4())
 
         try:
-            await ws_handler.handle_new_connection(websocket, client_uid)
+            await ws_handler.handle_new_connection(websocket, client_uid, auth_uid)
             await ws_handler.handle_websocket_communication(websocket, client_uid)
         except WebSocketDisconnect:
             await ws_handler.handle_disconnect(client_uid)
@@ -85,12 +93,14 @@ def init_webtool_routes(default_context_cache: ServiceContext) -> APIRouter:
 
             # Validate audio data size
             if len(audio_data) % 2 != 0:
-                raise ValueError("Invalid audio data: Buffer size must be even")
+                raise ValueError(
+                    "Invalid audio data: Buffer size must be even")
 
             # Convert to 16-bit PCM samples to float32
             try:
                 audio_array = (
-                    np.frombuffer(audio_data, dtype=np.int16).astype(np.float32)
+                    np.frombuffer(audio_data, dtype=np.int16).astype(
+                        np.float32)
                     / 32768.0
                 )
             except ValueError as e:

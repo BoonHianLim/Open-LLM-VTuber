@@ -154,7 +154,7 @@ class HumeAIAgent(AgentInterface):
             asyncio.create_task(self._ws.close())
             self._connected = False
 
-    async def chat(self, batch_input: BatchInput) -> AsyncIterator[AudioOutput]:
+    async def chat(self, batch_input: BatchInput, auth_uid: str) -> AsyncIterator[AudioOutput]:
         """
         Chat with Hume AI and get audio response
 
