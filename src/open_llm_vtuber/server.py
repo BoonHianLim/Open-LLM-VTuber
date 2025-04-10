@@ -47,7 +47,9 @@ class WebSocketServer:
 
         @self.app.middleware("http")
         async def root_session_middleware(request: Request, call_next):
-            logger.info(f"Middleware called {request.url.path} {request.url.path == '/'}")
+            logger.info(
+                f"Middleware called {request.url.path} {request.url.path == '/'}"
+            )
             if request.url.path == "/":
                 # ✅ Create session here (set cookie, log session, etc.)
                 # For example, set a response cookie
@@ -55,11 +57,19 @@ class WebSocketServer:
                 logger.info(f"new session id: {auth_uid}")
                 response = RedirectResponse("/assistant")
                 response.set_cookie(
-                    key="auth_uid", value=auth_uid, httponly=True)
+                    key="auth_uid",
+                    value=auth_uid,
+                    httponly=True,
+                    secure=False,
+                    samesite="lax",
+                    max_age=60 * 60 * 24,
+                    path="/",
+                )
                 return response
 
             # Let other routes proceed as usual
             return await call_next(request)
+
         # Load configurations and initialize the default context cache
         default_context_cache = ServiceContext()
         default_context_cache.load_from_config(config)
