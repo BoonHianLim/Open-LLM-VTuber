@@ -113,7 +113,7 @@
         "emotionMap": {
             "neutral": 0,
             "anger": 2,
-            "disgust": 7,   
+            "disgust": 7,
             "fear": 3,
             "joy": 5,
             "sadness": 3,
@@ -157,6 +157,16 @@
             "HitAreaBody": {
                 "": 1
             }
+        }
+    },
+    {
+        "name": "hiyori",
+        "description": "hiyori",
+        "url": "/live2d-models/hiyori/hiyori.model3.json",
+        "kScale": 0.3,
+        "idleMotionGroupName": "Idle",
+        "emotionMap": {
+            "neutral": 0
         }
     }
 ]

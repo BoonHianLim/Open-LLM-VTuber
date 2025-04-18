@@ -1,5 +1,7 @@
 # ignore the user configuration file
 conf.yaml
+# ignore the live config file
+conf.live.yaml
 
 # ignore non-default background images
 /backgrounds/*

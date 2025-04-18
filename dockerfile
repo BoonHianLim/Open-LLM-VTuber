@@ -51,6 +51,8 @@ FROM bark AS final
 # Copy application code to the container
 COPY . /app
 
+COPY conf.live.yaml /app/conf.yaml
+
 # Set working directory
 WORKDIR /app
 

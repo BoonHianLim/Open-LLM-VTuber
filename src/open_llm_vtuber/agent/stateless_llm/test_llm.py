@@ -9,7 +9,7 @@ class TestLLM(StatelessLLMInterface):
     def __init__(
             self,
             model: str = "test-model",
-            base_url: str = None,
+            base_url: str = "http://localhost:8101",
             llm_api_key: str = None,
             system: str = None,
     ):
@@ -24,13 +24,13 @@ class TestLLM(StatelessLLMInterface):
         """
         self.model = model
         self.system = system
-
+        self.base_url = base_url
         # Initialize Test client
         self.client = None
         logger.info(f"Initialized Test LLM with model: {self.model}")
 
     async def chat_completion(self, messages, system=None, auth_uid: str = "") -> AsyncIterator[str]:
-        url = "http://localhost:8101/assistant/chat"
+        url = f"{self.base_url}/assistant/chat"
         first_user_message = next(
             (msg["content"] for msg in reversed(messages) if msg["role"] == "user"), None)
         payload = {
@@ -46,4 +46,4 @@ class TestLLM(StatelessLLMInterface):
             async with client.stream("POST", url, json=payload, cookies=cookies) as response:
                 async for line in response.aiter_lines():
                     if line.strip():  # optional: filter out empty lines
-                        yield line
+                        yield line.replace("*", "")
